@@ -1,0 +1,303 @@
+<channel version="3.4.2">
+  <id>58a62884-3e63-436b-bc04-f279bc1feb3b</id>
+  <nextMetaDataId>2</nextMetaDataId>
+  <name>HTTP LISTENER</name>
+  <description>HTTP Listener to receive all the requests from Tele Health</description>
+  <enabled>true</enabled>
+  <lastModified>
+    <time>1497327965118</time>
+    <timezone>Asia/Calcutta</timezone>
+  </lastModified>
+  <revision>47</revision>
+  <sourceConnector version="3.4.2">
+    <metaDataId>0</metaDataId>
+    <name>sourceConnector</name>
+    <properties class="com.mirth.connect.connectors.http.HttpReceiverProperties" version="3.4.2">
+      <pluginProperties>
+        <com.mirth.connect.plugins.httpauth.basic.BasicHttpAuthProperties version="3.4.2">
+  <authType>BASIC</authType>
+          <realm>My Realm</realm>
+          <credentials class="linked-hash-map">
+    <entry>
+      <string>key</string>
+              <string>development123</string>
+            </entry>
+            <entry>
+      <string>admin</string>
+              <string>admin</string>
+            </entry>
+          </credentials>
+        </com.mirth.connect.plugins.httpauth.basic.BasicHttpAuthProperties>
+      </pluginProperties>
+      <listenerConnectorProperties version="3.4.2">
+        <host>0.0.0.0</host>
+        <port>9090</port>
+      </listenerConnectorProperties>
+      <sourceConnectorProperties version="3.4.2">
+        <responseVariable>d1</responseVariable>
+        <respondAfterProcessing>true</respondAfterProcessing>
+        <processBatch>false</processBatch>
+        <firstResponse>false</firstResponse>
+        <processingThreads>1</processingThreads>
+        <resourceIds class="linked-hash-map">
+          <entry>
+            <string>Default Resource</string>
+            <string>[Default Resource]</string>
+          </entry>
+        </resourceIds>
+        <queueBufferSize>1000</queueBufferSize>
+      </sourceConnectorProperties>
+      <xmlBody>false</xmlBody>
+      <parseMultipart>true</parseMultipart>
+      <includeMetadata>true</includeMetadata>
+      <binaryMimeTypes>application/.*(?&lt;!json|xml)$|image/.*|video/.*|audio/.*</binaryMimeTypes>
+      <binaryMimeTypesRegex>true</binaryMimeTypesRegex>
+      <responseContentType>text/xml</responseContentType>
+      <responseDataTypeBinary>false</responseDataTypeBinary>
+      <responseStatusCode>${responseStatusCode}</responseStatusCode>
+      <responseHeaders class="linked-hash-map">
+        <entry>
+          <string>Access-Control-Allow-Origin</string>
+          <list>
+            <string>*</string>
+          </list>
+        </entry>
+        <entry>
+          <string>Access-Control-Allow-Methods</string>
+          <list>
+            <string>GET, POST, PUT</string>
+          </list>
+        </entry>
+      </responseHeaders>
+      <charset>UTF-8</charset>
+      <contextPath>account</contextPath>
+      <timeout>0</timeout>
+      <staticResources/>
+    </properties>
+    <transformer version="3.4.2">
+      <steps/>
+      <inboundDataType>XML</inboundDataType>
+      <outboundDataType>RAW</outboundDataType>
+      <inboundProperties class="com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties" version="3.4.2">
+        <serializationProperties class="com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties" version="3.4.2">
+          <stripNamespaces>true</stripNamespaces>
+        </serializationProperties>
+        <batchProperties class="com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties" version="3.4.2">
+          <splitType>Element_Name</splitType>
+          <elementName></elementName>
+          <level>1</level>
+          <query></query>
+          <batchScript></batchScript>
+        </batchProperties>
+      </inboundProperties>
+      <outboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.4.2">
+        <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.4.2">
+          <splitType>JavaScript</splitType>
+          <batchScript></batchScript>
+        </batchProperties>
+      </outboundProperties>
+    </transformer>
+    <filter version="3.4.2">
+      <rules/>
+    </filter>
+    <transportName>HTTP Listener</transportName>
+    <mode>SOURCE</mode>
+    <enabled>true</enabled>
+    <waitForPrevious>true</waitForPrevious>
+  </sourceConnector>
+  <destinationConnectors>
+    <connector version="3.4.2">
+      <metaDataId>1</metaDataId>
+      <name>Destination 1</name>
+      <properties class="com.mirth.connect.connectors.js.JavaScriptDispatcherProperties" version="3.4.2">
+        <pluginProperties/>
+        <destinationConnectorProperties version="3.4.2">
+          <queueEnabled>false</queueEnabled>
+          <sendFirst>false</sendFirst>
+          <retryIntervalMillis>10000</retryIntervalMillis>
+          <regenerateTemplate>false</regenerateTemplate>
+          <retryCount>0</retryCount>
+          <rotate>false</rotate>
+          <includeFilterTransformer>false</includeFilterTransformer>
+          <threadCount>1</threadCount>
+          <threadAssignmentVariable></threadAssignmentVariable>
+          <validateResponse>false</validateResponse>
+          <resourceIds class="linked-hash-map">
+            <entry>
+              <string>Default Resource</string>
+              <string>[Default Resource]</string>
+            </entry>
+          </resourceIds>
+          <queueBufferSize>1000</queueBufferSize>
+        </destinationConnectorProperties>
+        <script>//logger.info(sourceMap.get(&apos;method&apos;));
+var responseJson = {};
+responseJson.body = &quot;&lt;response&gt;FAILED&lt;/response&gt;&quot;;
+var channelResponse = {};
+try {
+    var newPractice = {};
+    var XMLObj = new XML(connectorMessage.getRawData());
+    newPractice.EHRType = XMLObj.EHRType;
+    newPractice.practiceID = XMLObj.practiceID;
+    newPractice.accountName = XMLObj.accountName;
+    newPractice.clientSecret = XMLObj.clientSecret;
+    newPractice.clientID = XMLObj.clientID;
+    newPractice.MSGType = XMLObj.msgtype;
+    newPractice.accountStatus = XMLObj.accountStatus;
+    newPractice.numberoflicenses = XMLObj.numberoflicenses;
+    newPractice.email = XMLObj.email;
+    newPractice.updatetime = XMLObj.updatetime;
+    newPractice.properties = {};
+    for each(var item in XMLObj.properties.property) {
+        newPractice.properties[item.@key.toLowerCase()] = item.@value;
+    }
+
+    logger.info(JSON.stringify(newPractice));
+    switch (newPractice.MSGType.toString().toUpperCase()) {
+        case &quot;ADDACCOUNT&quot;:
+            logger.info(&quot;IN METHOD ADD&quot;);
+            //            logger.info(JSON.stringify(newPractice));
+            channelResponse = router.routeMessage(&quot;CREATE NEW PRACTICE&quot;, JSON.stringify(newPractice));
+            break;
+        case &quot;DELETEACCOUNT&quot;:
+            logger.info(&quot;IN DELETEACCOUNT&quot;);
+            //            logger.info(JSON.stringify(newPractice));
+            break;
+        case &quot;UPDATEACCOUNT&quot;:
+            logger.info(&quot;IN UPDATEACCOUNT&quot;);
+            channelResponse = router.routeMessage(&quot;UPDATE ACCOUNT&quot;, JSON.stringify(newPractice));
+            break;
+        case &quot;UPDATERTCACCOUNT&quot;:
+            logger.info(&quot;IN UPDATERTCACCOUNT&quot;);
+            channelResponse = router.routeMessage(&quot;UPDATE RTC ACCOUNT&quot;, JSON.stringify(newPractice));
+            break;
+        case &quot;READSINGLEACCOUNT&quot;:
+            logger.info(&quot;IN READACCOUNT&quot;);
+            channelResponse = router.routeMessage(&quot;READSINGLEACCOUNT&quot;, JSON.stringify(newPractice));
+            break;
+        case &quot;READALLACCOUNT&quot;:
+            logger.info(&quot;IN READACCOUNT&quot;);
+            channelResponse = router.routeMessage(&quot;READALLACCOUNT&quot;, JSON.stringify(newPractice));
+            break;
+        case &quot;ACTIVE&quot;:
+            logger.info(&quot;IN ACTIVE&quot;);
+            channelResponse = router.routeMessage(&quot;ACTIVE ACCOUNT&quot;, JSON.stringify(newPractice));
+            break;
+        case &quot;SUSPEND&quot;:
+            logger.info(&quot;IN SUSPEND&quot;);
+            channelResponse = router.routeMessage(&quot;SUSPEND ACCOUNT&quot;, JSON.stringify(newPractice));
+            break;
+        default:
+            //        GENERATE DUMMY UNKNOWN RESPONSE
+            var dummyResponse = {
+                getMessage: function() {
+                    return JSON.stringify({
+                        statusCode: &quot;400&quot;,
+                        body: &quot;&lt;response&gt;UNKNOWN MSG&lt;/response&gt;&quot;
+                    });
+                }
+            };
+            channelResponse = dummyResponse;
+    }
+    responseJson = JSON.parse(channelResponse.getMessage());
+    channelMap.put(&apos;responseStatusCode&apos;, responseJson.statusCode);
+} catch (e) {
+    logger.info(e);
+} finally {
+    return responseJson.body;
+}</script>
+      </properties>
+      <transformer version="3.4.2">
+        <steps/>
+        <inboundTemplate encoding="base64"></inboundTemplate>
+        <outboundTemplate encoding="base64"></outboundTemplate>
+        <inboundDataType>RAW</inboundDataType>
+        <outboundDataType>RAW</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </transformer>
+      <responseTransformer version="3.4.2">
+        <steps/>
+        <inboundTemplate encoding="base64"></inboundTemplate>
+        <outboundTemplate encoding="base64"></outboundTemplate>
+        <inboundDataType>RAW</inboundDataType>
+        <outboundDataType>RAW</outboundDataType>
+        <inboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </inboundProperties>
+        <outboundProperties class="com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties" version="3.4.2">
+          <batchProperties class="com.mirth.connect.plugins.datatypes.raw.RawBatchProperties" version="3.4.2">
+            <splitType>JavaScript</splitType>
+            <batchScript></batchScript>
+          </batchProperties>
+        </outboundProperties>
+      </responseTransformer>
+      <filter version="3.4.2">
+        <rules/>
+      </filter>
+      <transportName>JavaScript Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>true</enabled>
+      <waitForPrevious>true</waitForPrevious>
+    </connector>
+  </destinationConnectors>
+  <preprocessingScript>// Modify the message variable below to pre process data
+return message;</preprocessingScript>
+  <postprocessingScript>// This script executes once after a message has been processed
+// Responses returned from here will be stored as &quot;Postprocessor&quot; in the response map
+return;</postprocessingScript>
+  <deployScript>// This script executes once when the channel is deployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</deployScript>
+  <undeployScript>// This script executes once when the channel is undeployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</undeployScript>
+  <properties version="3.4.2">
+    <clearGlobalChannelMap>true</clearGlobalChannelMap>
+    <messageStorageMode>DEVELOPMENT</messageStorageMode>
+    <encryptData>false</encryptData>
+    <removeContentOnCompletion>false</removeContentOnCompletion>
+    <removeOnlyFilteredOnCompletion>false</removeOnlyFilteredOnCompletion>
+    <removeAttachmentsOnCompletion>false</removeAttachmentsOnCompletion>
+    <initialState>STARTED</initialState>
+    <storeAttachments>false</storeAttachments>
+    <tags class="linked-hash-set"/>
+    <metaDataColumns>
+      <metaDataColumn>
+        <name>SOURCE</name>
+        <type>STRING</type>
+        <mappingName>mirth_source</mappingName>
+      </metaDataColumn>
+      <metaDataColumn>
+        <name>TYPE</name>
+        <type>STRING</type>
+        <mappingName>mirth_type</mappingName>
+      </metaDataColumn>
+    </metaDataColumns>
+    <attachmentProperties version="3.4.2">
+      <type>None</type>
+      <properties/>
+    </attachmentProperties>
+    <archiveEnabled>true</archiveEnabled>
+    <resourceIds class="linked-hash-map">
+      <entry>
+        <string>Default Resource</string>
+        <string>[Default Resource]</string>
+      </entry>
+    </resourceIds>
+  </properties>
+  <codeTemplateLibraries/>
+</channel>
